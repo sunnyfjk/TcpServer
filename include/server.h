@@ -14,6 +14,8 @@ void ServerListen(struct evconnlistener *listener,evutil_socket_t fd,struct sock
 
 void ServerRead(struct bufferevent *bev,void *arg);
 
-void ServerError(struct bufferevent *bev,short events,void *arg);
+void ServerWrite(struct bufferevent *bev,void *arg);
+
+void ServerEvent(struct bufferevent *bev,short events,void *arg);
 
 #endif // SERVER_H
