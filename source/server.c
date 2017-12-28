@@ -23,7 +23,7 @@ int ServerInit(struct Server_t *s)
                 PERR("event_base_new_err\n");
                 goto event_base_new_err;
         }
-        s->listener=evconnlistener_new_bind(s->base, ServerListen, s->base,LEV_OPT_REUSEABLE|LEV_OPT_CLOSE_ON_FREE,10, (struct sockaddr*)&addr,sizeof(addr));
+        s->listener=evconnlistener_new_bind(s->base, ServerListen, s,LEV_OPT_REUSEABLE|LEV_OPT_CLOSE_ON_FREE,10, (struct sockaddr*)&addr,sizeof(addr));
         if(s->listener==NULL) {
                 PERR("evconnlistener_new_bind_err");
                 goto evconnlistener_new_bind_err;
@@ -44,7 +44,10 @@ event_base_new_err:
 
 void ServerListen(struct evconnlistener *listener, evutil_socket_t fd, struct sockaddr *sock, int socklen, void *arg)
 {
-
+        struct Server_t *s=arg;
+        struct bufferevent *bev =  bufferevent_socket_new(s->base, fd,BEV_OPT_CLOSE_ON_FREE);
+        bufferevent_setcb(bev, ServerRead, ServerWrite, ServerEvent, s);
+        bufferevent_enable(bev, EV_READ | EV_PERSIST);
 }
 
 void ServerRead(struct bufferevent *bev, void *arg)
@@ -52,7 +55,16 @@ void ServerRead(struct bufferevent *bev, void *arg)
 
 }
 
-void ServerError(struct bufferevent *bev, short events, void *arg)
+void ServerWrite(struct bufferevent *bev,void *arg)
 {
 
+}
+
+void ServerEvent(struct bufferevent *bev, short events, void *arg)
+{
+        if (events & BEV_EVENT_EOF)
+                printf("connection closed\n");
+        else if (events & BEV_EVENT_ERROR)
+                printf("some other error\n");
+        bufferevent_free(bev);
 }
