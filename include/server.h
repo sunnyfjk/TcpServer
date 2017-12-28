@@ -5,11 +5,12 @@ struct Server_t {
         struct event_base *base;
         const char *ip;
         int port;
+        struct evconnlistener *listener;
 };
 
 int ServerInit(struct Server_t *s);
 
-void ServerListen(struct evconnlistener *listener,evutil_socket_t fd,struct sockaddr_in *sock,int socklen,void *arg);
+void ServerListen(struct evconnlistener *listener,evutil_socket_t fd,struct sockaddr *sock,int socklen,void *arg);
 
 void ServerRead(struct bufferevent *bev,void *arg);
 
