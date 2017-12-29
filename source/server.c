@@ -17,7 +17,6 @@ int ServerCreate(struct Server_t *s)
 {
         struct sockaddr_in addr={0};
         int ret=-1;
-        int
         evthread_use_pthreads();
         addr.sin_family=AF_INET;
         addr.sin_port=htons(s->port);
