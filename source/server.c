@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-
+#include <event2/thread.h>
 #include <server.h>
+
 
 #ifndef PERR
 
