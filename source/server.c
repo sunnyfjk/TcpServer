@@ -1,11 +1,11 @@
-#include <event.h>
-#include <event2/listener.h>
-#include <server.h>
+
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+
+#include <server.h>
 
 #ifndef PERR
 
@@ -13,12 +13,10 @@
 
 #endif
 
-int ServerInit(struct Server_t *s)
+int ServerCreate(struct Server_t *s)
 {
         struct sockaddr_in addr={0};
-        int ret=0;
-
-        memset(s,0,sizeof(*s));
+        int ret=-1;
 
         addr.sin_family=AF_INET;
         addr.sin_port=htons(s->port);
@@ -60,7 +58,13 @@ evconnlistener_new_bind_err:
 event_base_new_err:
         return ret;
 }
-
+void ServerClose(struct Server_t *s)
+{
+        event_del(s->signal_event);
+        event_del(s->signal_event);
+        evconnlistener_free(s->listener);
+        event_base_free(s->base);
+}
 void ServerListen(struct evconnlistener *listener, evutil_socket_t fd, struct sockaddr *sock, int socklen, void *arg)
 {
         struct Server_t *s=arg;

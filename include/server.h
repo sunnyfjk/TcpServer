@@ -1,6 +1,9 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <event.h>
+#include <event2/listener.h>
+
 struct Server_t {
         const char *ip;
         int port;
@@ -9,7 +12,9 @@ struct Server_t {
         struct event *signal_event;
 };
 
-int ServerInit(struct Server_t *s);
+int ServerCreate(struct Server_t *s);
+
+void ServerClose(struct Server_t *s);
 
 void ServerListen(struct evconnlistener *listener,evutil_socket_t fd,struct sockaddr *sock,int socklen,void *arg);
 
