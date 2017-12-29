@@ -69,20 +69,17 @@ void ServerClose(struct Server_t *s)
 void ServerListen(struct evconnlistener *listener, evutil_socket_t fd, struct sockaddr *sock, int socklen, void *arg)
 {
         struct Server_t *s=arg;
-        struct bufferevent *bev =  bufferevent_socket_new(s->base, fd,BEV_OPT_CLOSE_ON_FREE);
-        bufferevent_setcb(bev, ServerRead, ServerWrite, ServerEvent, s);
-        bufferevent_enable(bev, EV_READ | EV_WRITE | EV_PERSIST);
+        struct bufferevent *bev =  bufferevent_socket_new(s->base, fd,BEV_OPT_CLOSE_ON_FREE|BEV_OPT_THREADSAFE|BEV_OPT_DEFER_CALLBACKS);
+        bufferevent_setcb(bev, ServerRead, NULL, ServerEvent, s);
+        bufferevent_enable(bev, EV_READ | EV_WRITE);
 }
 
 void ServerRead(struct bufferevent *bev, void *arg)
 {
 
-  #ifdef __DEBUG__
-        char tmp[17]={0};
-        bufferevent_read(bev,tmp,sizeof(tmp)-1);
-        PERR("bufferevent read msg:%s\n",tmp);
-
-  #endif
+        struct evbuffer *input = bufferevent_get_input(bev);
+        struct evbuffer *output = bufferevent_get_output(bev);
+        evbuffer_add_buffer(output, input);
 }
 
 void ServerWrite(struct bufferevent *bev,void *arg)
