@@ -21,6 +21,7 @@ int ServerCreate(struct Server_t *s)
         evthread_use_pthreads();
         addr.sin_family=AF_INET;
         addr.sin_port=htons(s->port);
+        inet_pton(AF_INET,s->ip,&addr.sin_addr);
         s->base = event_base_new();
         if(s->base==NULL) {
                 PERR("event_base_new_err\n");
