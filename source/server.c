@@ -63,7 +63,7 @@ event_base_new_err:
 void ServerClose(struct Server_t *s)
 {
         event_del(s->signal_event);
-        event_del(s->signal_event);
+        event_free(s->signal_event);
         evconnlistener_free(s->listener);
         event_base_free(s->base);
 }
