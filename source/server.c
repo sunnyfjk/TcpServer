@@ -90,5 +90,5 @@ void ServerEvent(struct bufferevent *bev, short events, void *arg)
 void ServerSignalEvent(evutil_socket_t sig, short events, void * arg){
         struct Server_t *s=arg;
         struct timeval delay={2,0};
-        event_base_loop_exit(s->base,&delay);
+        event_base_loopexit(s->base,&delay);
 }
