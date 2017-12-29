@@ -10,6 +10,9 @@ struct Server_t {
         struct event_base *base;
         struct evconnlistener *listener;
         struct event *signal_event;
+        #ifdef __DEBUG__
+        char message[15];
+        #endif
 };
 
 int ServerCreate(struct Server_t *s);

@@ -17,7 +17,8 @@ int ServerCreate(struct Server_t *s)
 {
         struct sockaddr_in addr={0};
         int ret=-1;
-
+        int
+        evthread_use_pthreads();
         addr.sin_family=AF_INET;
         addr.sin_port=htons(s->port);
         s->base = event_base_new();
@@ -76,6 +77,12 @@ void ServerListen(struct evconnlistener *listener, evutil_socket_t fd, struct so
 void ServerRead(struct bufferevent *bev, void *arg)
 {
 
+  #ifdef __DEBUG__
+        char tmp[17]={0};
+        bufferevent_read(bev,tmp,sizeof(tmp)-1);
+        PERR("bufferevent read msg:%s\n",tmp);
+
+  #endif
 }
 
 void ServerWrite(struct bufferevent *bev,void *arg)
