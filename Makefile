@@ -1,3 +1,10 @@
+# @Author: fjk
+# @Date:   2017-12-29T19:05:24+08:00
+# @Email:  sunnyfjk@gmail.com
+# @Filename: Makefile
+# @Last modified by:   fjk
+# @Last modified time: 2017-12-30T11:43:24+08:00
+
 TAG=main
 SRC=$(shell find ./ -name "*.c")
 INC=-I./include

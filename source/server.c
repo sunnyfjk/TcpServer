@@ -1,3 +1,11 @@
+/**
+ * @Author: fjk
+ * @Date:   2017-12-29T23:23:03+08:00
+ * @Email:  sunnyfjk@gmail.com
+ * @Filename: server.c
+ * @Last modified by:   fjk
+ * @Last modified time: 2017-12-30T11:43:05+08:00
+ */
 
 #include <arpa/inet.h>
 #include <unistd.h>
@@ -71,12 +79,13 @@ void ServerListen(struct evconnlistener *listener, evutil_socket_t fd, struct so
 {
         struct Server_t *s=arg;
         struct bufferevent *bev =  bufferevent_socket_new(s->base, fd,BEV_OPT_CLOSE_ON_FREE|BEV_OPT_THREADSAFE|BEV_OPT_DEFER_CALLBACKS);
-        bufferevent_setcb(bev, ServerRead, NULL, ServerEvent, s);
+        bufferevent_setcb(bev, ServerRead, ServerWrite, ServerEvent, s);
         bufferevent_enable(bev, EV_READ | EV_WRITE);
 }
 
 void ServerRead(struct bufferevent *bev, void *arg)
 {
+
 
         struct evbuffer *input = bufferevent_get_input(bev);
         struct evbuffer *output = bufferevent_get_output(bev);
